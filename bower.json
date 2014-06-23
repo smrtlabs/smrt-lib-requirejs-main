@@ -1,0 +1,17 @@
+{
+    "name": "smrt-lib-requirejs-extras",
+    "version": "0.0.0",
+    "homepage": "https://github.com/smrtlabs/smrt-lib-requirejs-extras",
+    "authors": [
+        "Mateusz Charytoniuk <mateusz.charytoniuk@gmail.com>"
+        "Paweł Łaskarzewski <kl3ryk@gmail.com>"
+    ],
+    "license": "MIT",
+    "ignore": [
+        "**/.*",
+        "node_modules",
+        "bower_components",
+        "test",
+        "tests"
+    ]
+}

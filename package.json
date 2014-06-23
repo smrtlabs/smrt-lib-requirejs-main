@@ -1,0 +1,26 @@
+{
+    "name": "smrt-lib-requirejs-extras",
+    "version": "0.0.0",
+    "main": "smrt-lib-requirejs-extras",
+    "scripts": {
+        "test": "gulp test"
+    },
+    "devDependencies": {
+        "chai": "1.9.x",
+        "gulp": "3.x",
+        "gulp-cached": "0.x",
+        "gulp-esformatter": "0.x",
+        "gulp-eslint": "0.x",
+        "gulp-istanbul": "0.x",
+        "gulp-mocha": "0.x",
+        "gulp-plumber": "0.x",
+        "gulp-watch": "0.x"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git@github.com:smrtlabs/smrt-lib-requirejs-extras.git"
+    },
+    "engines": {
+        "node": ">=0.10"
+    }
+}
