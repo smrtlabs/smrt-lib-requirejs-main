@@ -19,6 +19,14 @@
     }
 
     /**
+     * @param {*} err object that caused an error
+     * @returns {void}
+     */
+    function errorHandle (err) {
+        console.error(err);
+    }
+
+    /**
      * @param {String} url build script url
      * @param {Function} cbSuccess function to be called on success
      * @param {Function} cbFailure function to be called on failure
@@ -39,7 +47,7 @@
      * @param {Function} cbFailure function to be called on failure
      * @returns {void}
      */
-    function loadEntryScript (cbSuccess, cbFailure) {
+    function loadEntryScriptElement (cbSuccess, cbFailure) {
         var found = false,
             i,
             script,
@@ -49,13 +57,31 @@
             script = scripts.item(i);
             if (script.hasAttributes("data-main") && script.hasAttribute(nsAttribute("main"))) {
                 found = true;
-                cbSuccess(script);
+                cbSuccess(script, cbFailure);
             }
         }
 
         if (!found) {
-            cbFailure();
+            cbFailure(cbSuccess);
         }
+    }
+
+    /**
+     * @param {Function} cbSuccess function to be called on success
+     * @param {Function} cbFailure function to be called on failure
+     * @returns {void}
+     */
+    function loadMainScript (cbSuccess, cbFailure) {
+        loadEntryScriptElement(function (script, loadEntryScriptCbFailure) {
+            var buildScriptUrl = script.getAttribute(nsAttribute("build"));
+
+            loadBuildScript(buildScriptUrl, function (build, loadBuildScriptCbFailure) {
+                var configuredRequire = require.config(build),
+                    mainScriptUrl = script.getAttribute(nsAttribute("main"));
+
+                configuredRequire([mainScriptUrl], cbSuccess, loadBuildScriptCbFailure);
+            }, loadEntryScriptCbFailure);
+        }, cbFailure);
     }
 
     /**
@@ -68,7 +94,7 @@
     function normalizeBuildObject (url, buildObject, cbSuccess, cbFailure) {
         buildObject.baseUrl = [basename(url), buildObject.baseUrl].join(PATH_SEPARATOR);
 
-        cbSuccess(buildObject);
+        cbSuccess(buildObject, cbFailure);
     }
 
     /**
@@ -138,16 +164,5 @@
         rq.send();
     }
 
-    loadEntryScript(function (script) {
-        var buildScriptUrl = script.getAttribute(nsAttribute("build"));
-
-        loadBuildScript(buildScriptUrl, function (build) {
-            var configuredRequire = require.config(build),
-                mainScriptUrl = script.getAttribute(nsAttribute("main"));
-
-            configuredRequire([mainScriptUrl]);
-        });
-    });
-
-    console.log(document.querySelector("[data-smrt-cloak]"));
+    loadMainScript(null, errorHandle);
 }(window.require));
