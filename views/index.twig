@@ -4,9 +4,23 @@
         <title>hello</title>
     </head>
     <body>
+        <div class="smrt-cloak" data-smrt-cloak="a">
+        </div>
+        <smrt-script src="a"></smrt-script>
+
+        <script type="text/javascript+smrt" data-require="a"></script>
+        <script type="text/javascript+smrt" data-require="jquery">
+            var $ = require("jquery");
+
+            console.log($);
+        </script>
+        <script type="text/javascript+smrt" data-require="a" data-src="/foo/.js"></script>
+
         <script
+            async
             data-main="{{ asset('js/smrt-lib-requirejs-extras') }}"
             data-smrt-build="{{ asset('js/build.js') }}"
+            data-smrt-cloak-class="smrt-cloak"
             data-smrt-main="{{ asset('js/mymain.js') }}"
             src="{{ asset('js/require.js') }}"
             type="text/javascript"

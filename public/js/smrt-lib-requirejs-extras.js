@@ -148,4 +148,6 @@
             configuredRequire([mainScriptUrl]);
         });
     });
+
+    console.log(document.querySelector("[data-smrt-cloak]"));
 }(window.require));
