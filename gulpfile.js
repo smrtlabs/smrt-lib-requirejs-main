@@ -12,7 +12,8 @@ var cached = require("gulp-cached"),
     gulp = require("gulp"),
     istanbul = require("gulp-istanbul"),
     mocha = require("gulp-mocha"),
-    path = require("path");
+    path = require("path"),
+    rjs = require("gulp-r");
 
 /*eslint no-sync: 0 */
 
@@ -63,17 +64,25 @@ gulp.task("cover", function (done) {
         .pipe(require("gulp-debug")())
         .pipe(istanbul())
         .on("end", function () {
-        gulp.src(global.paths.tests.files)
-            .pipe(mocha())
-            .pipe(istanbul.writeReports(global.paths.coverage.root))
-            .on("end", done);
-    });
+            gulp.src(global.paths.tests.files)
+                .pipe(mocha())
+                .pipe(istanbul.writeReports(global.paths.coverage.root))
+                .on("end", done);
+            });
 });
 
 gulp.task("lint", ["beautify"], function () {
     gulp.src(global.paths.all)
         .pipe(eslint(global.configs.eslintrc))
         .pipe(eslint.format());
+});
+
+gulp.task("minify", function () {
+    gulp.src("public/js/*.js")
+        .pipe(rjs({
+            "baseUrl": "public/js"
+        }))
+        .pipe(gulp.dest("dist"));
 });
 
 gulp.task("test", ["lint"], function () {

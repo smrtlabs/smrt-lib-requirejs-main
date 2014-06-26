@@ -5,6 +5,9 @@
     "scripts": {
         "test": "gulp test"
     },
+    "dependencies": {
+        "gulp-r": "1.x"
+    },
     "devDependencies": {
         "chai": "1.9.x",
         "gulp": "3.x",
