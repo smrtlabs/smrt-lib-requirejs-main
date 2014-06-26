@@ -27,7 +27,7 @@
     function loadBuildScript (url, cbSuccess, cbFailure) {
         if (url) {
             request(url, function (rq) {
-                normalizeBuildString(url, rq.response, cbSuccess, cbFailure);
+                normalizeBuildString(url, rq.responseText, cbSuccess, cbFailure);
             }, cbFailure);
         } else {
             normalizeBuildObject(url, {}, cbSuccess, cbFailure);
