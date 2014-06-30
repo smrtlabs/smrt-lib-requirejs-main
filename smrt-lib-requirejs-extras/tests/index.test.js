@@ -40,12 +40,15 @@ describe("smrt-lib-requirejs-extras", function () {
 
     beforeEach(function (done) {
         var request = http.request({
-            "hostname": "localhost",
+            "hostname": "127.0.0.1",
             "port": server.address().port,
             "path": "/minimal.test.html",
             "method": "GET"
-        }, function () {
-            done();
+        }, function (response) {
+            assert.strictEqual(response.statusCode, 200);
+            response.on("data", function () {
+                done();
+            });
         });
 
         request.end();
@@ -53,14 +56,9 @@ describe("smrt-lib-requirejs-extras", function () {
 
     it("does something", function (done) {
         var childArgs = [
-            path.join(__dirname, "../phantomjs/runner.js"),
+            path.join(global.paths.root, "phantomjs/runner.js"),
             util.format("http://%s:%d/%s", "127.0.0.1", server.address().port, "minimal.test.html")
         ];
-
-        this.timeout(10000);
-
-        console.log(phantomjs.path);
-        console.log(childArgs);
 
         process = execFile(phantomjs.path, childArgs, function (err, stdout, stderr) {
             assert.ifError(err);
