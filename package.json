@@ -10,6 +10,7 @@
     },
     "devDependencies": {
         "chai": "1.9.x",
+        "express": "4.x",
         "gulp": "3.x",
         "gulp-cached": "0.x",
         "gulp-esformatter": "0.x",
@@ -17,7 +18,8 @@
         "gulp-istanbul": "0.x",
         "gulp-mocha": "0.x",
         "gulp-plumber": "0.x",
-        "gulp-watch": "0.x"
+        "gulp-watch": "0.x",
+        "phantomjs": "1.x"
     },
     "repository": {
         "type": "git",

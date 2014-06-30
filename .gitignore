@@ -5,4 +5,5 @@
 /*_coverage
 
 # vendor libraries
+/bower_components
 /node_modules
