@@ -16,7 +16,9 @@ var assert = require("chai").assert,
     util = require("util");
 
 describe("smrt-lib-requirejs-extras", function () {
-    var process,
+    var app,
+        process,
+        requestedUrls = [],
         server;
 
     after(function (done) {
@@ -28,9 +30,15 @@ describe("smrt-lib-requirejs-extras", function () {
     });
 
     before(function (done) {
-        var app = express();
+        var statics = express.static(global.paths.root);
 
-        app.use(express.static(path.join(__dirname, "/../fixtures")));
+        app = express();
+
+        app.use(function (req, res, next) {
+            requestedUrls.push(req.url);
+
+            return statics(req, res, next);
+        });
 
         server = http.createServer(app);
         server.on("listening", done);
@@ -42,11 +50,16 @@ describe("smrt-lib-requirejs-extras", function () {
         var request = http.request({
             "hostname": "127.0.0.1",
             "port": server.address().port,
-            "path": "/minimal.test.html",
+            "path": "/public/js/require.js",
             "method": "GET"
         }, function (response) {
             assert.strictEqual(response.statusCode, 200);
             response.on("data", function () {
+                // noop
+            });
+            response.on("end", function () {
+                requestedUrls = [];
+
                 done();
             });
         });
@@ -54,19 +67,30 @@ describe("smrt-lib-requirejs-extras", function () {
         request.end();
     });
 
-    it("does something", function (done) {
+    it("checks if every requested url is loaded", function (done) {
         var childArgs = [
             path.join(global.paths.root, "phantomjs/runner.js"),
-            util.format("http://%s:%d/%s", "127.0.0.1", server.address().port, "minimal.test.html")
+            util.format("http://%s:%d/%s", "127.0.0.1", server.address().port, "/smrt-lib-requirejs-extras/fixtures/minimal.test.html")
         ];
 
         process = execFile(phantomjs.path, childArgs, function (err, stdout, stderr) {
             assert.ifError(err);
 
-            console.log("PHANTOM_STDOUT", stdout);
-            console.log("PHANTOM_STDERR", stderr);
+            assert.deepEqual([
+                "/finish",
+                "/public/js/a.js",
+                "/public/js/mymain.js",
+                "/public/js/require.js",
+                "/smrt-lib-requirejs-extras/fixtures/minimal.test.html"
+            ].sort(), requestedUrls.sort());
 
             done();
+        });
+
+        app.get("/finish", function (req, res) {
+            console.log("FINISH!");
+
+            res.end("thx, phantomjs!");
         });
     });
 });

@@ -10,8 +10,12 @@ var page = require("webpage").create(),
     url = system.args[1];
 
 page.open(url, function (status) {
-    console.log("Loaded a web page %s", url);
-
-    phantom.exit();
 });
 
+page.onResourceReceived = function(response) {
+    if ("end" === response.stage && "finish" === response.url.split("/").pop()) {
+        console.log("np, node.js!");
+
+        phantom.exit();
+    }
+};
